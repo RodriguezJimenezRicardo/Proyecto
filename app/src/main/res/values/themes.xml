@@ -5,5 +5,8 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.Proyecto" parent="Base.Theme.Proyecto" />
+    <style name="Theme.Proyecto" parent="Base.Theme.Proyecto" >
+        <item name="android:fontFamily">casual</item>
+        <item name="android:windowBackground">@color/backgroundGrey</item>
+    </style>
 </resources>
