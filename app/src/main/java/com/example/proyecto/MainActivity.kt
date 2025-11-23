@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         val buttonNavigate: Button = findViewById(R.id.button_login);
 
         buttonNavigate.setOnClickListener {
-            val intent = Intent(this, Perfil::class.java)
+            val intent = Intent(this, DetallePelicula::class.java)
             startActivity(intent)
         }
 
