@@ -19,10 +19,15 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val buttonNavigate: Button = findViewById(R.id.button_login);
+        val buttonLogin: Button = findViewById(R.id.button_login)
+        buttonLogin.setOnClickListener {
+            val intent = Intent(this, Login::class.java)
+            startActivity(intent)
+        }
 
-        buttonNavigate.setOnClickListener {
-            val intent = Intent(this, DetallePelicula::class.java)
+        val buttonRegistro: Button = findViewById(R.id.button2)
+        buttonRegistro.setOnClickListener {
+            val intent = Intent(this, Registro::class.java)
             startActivity(intent)
         }
 
