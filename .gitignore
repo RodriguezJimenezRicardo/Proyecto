@@ -34,34 +34,40 @@ proguard/
 # Android Studio captures folder
 captures/
 
-# IntelliJ
-*.iml
+# IntelliJ IDEA - Excluir archivos personales
 .idea/workspace.xml
 .idea/tasks.xml
-.idea/gradle.xml
-.idea/assetWizardSettings.xml
-.idea/dictionaries
-.idea/libraries
-.idea/caches
+.idea/dictionaries/
+.idea/libraries/
+.idea/caches/
 .idea/modules.xml
 .idea/navEditor.xml
 .idea/deploymentTargetSelector.xml
 .idea/copilot*.xml
 .idea/studiobot.xml
-# Comment next line if keeping position of elements in Navigation Editor is relevant for you
-.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/gradle.xml
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/dbnavigator.xml
+.idea/misc.xml
 
-# Keystore files
-# Uncomment the following lines if you do not want to check your keystore files in.
-#*.jks
-#*.keystore
+# Archivos .iml
+*.iml
 
-# External native build folder generated in Android Studio 2.2 and later
+# Keystore files - IMPORTANTE: No subir claves de firma
+*.jks
+*.keystore
+
+# External native build folder
 .externalNativeBuild
 .cxx/
 
-# Google Services (e.g. APIs or Firebase)
-# Comment next line if you want to check in your google-services.json
+# Google Services - Descomentar si usas Firebase
 # google-services.json
 
 # Freeline
@@ -76,21 +82,21 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
-# Version control
-vcs.xml
-
 # lint
 lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
-# lint/reports/
 
 # Android Profiling
 *.hprof
 
 # MacOS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 
 # Windows
 Thumbs.db
@@ -104,46 +110,15 @@ Desktop.ini
 *.tmp
 *.orig
 
-# Android Studio 3.1+ serialized cache file
+# Android Studio serialized cache
 .idea/caches/build_file_checksums.ser
 
 # NDK
 obj/
 
-# IntelliJ IDEA
+# IntelliJ IDEA workspace
 *.iws
 /out/
-
-# User-specific configurations
-.idea/libraries/
-.idea/codeStyles/
-.idea/vcs.xml
-.idea/jsLibraryMappings.xml
-.idea/dataSources.ids
-.idea/dataSources.xml
-.idea/dataSources.local.xml
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
-.idea/dbnavigator.xml
-.idea/compiler.xml
-.idea/misc.xml
-
-# OS-specific files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-
-# Legacy Eclipse project files
-.classpath
-.project
-.cproject
-.settings/
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files
 *.jar
@@ -154,17 +129,8 @@ obj/
 *.tar.gz
 *.rar
 
-# virtual machine crash logs
+# Virtual machine crash logs
 hs_err_pid*
-
-# Android Studio UI Preview
-app/src/main/res/layout-*dpi
-
-# Signing files
-.signing/
-
-# Kotlin
-*.kt.swp
 
 # Build outputs
 */build/
@@ -173,3 +139,8 @@ app/build/
 app/release/
 app/debug/
 
+# Signing files
+.signing/
+
+# Kotlin
+*.kt.swp
