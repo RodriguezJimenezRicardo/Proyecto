@@ -34,30 +34,18 @@ proguard/
 # Android Studio captures folder
 captures/
 
-# IntelliJ IDEA - Excluir archivos personales
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dictionaries/
-.idea/libraries/
-.idea/caches/
-.idea/modules.xml
-.idea/navEditor.xml
-.idea/deploymentTargetSelector.xml
-.idea/copilot*.xml
-.idea/studiobot.xml
-.idea/assetWizardSettings.xml
-.idea/gradle.xml
-.idea/dataSources/
-.idea/dataSources.ids
-.idea/dataSources.local.xml
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
-.idea/dbnavigator.xml
-.idea/misc.xml
+# IntelliJ IDEA - Excluir toda la carpeta (recomendado para trabajo en equipo)
+.idea/
 
 # Archivos .iml
 *.iml
+
+# Opcional: Si necesitas compartir configuraciones específicas con tu equipo,
+# descomenta las siguientes líneas:
+# !.idea/codeStyles/
+# !.idea/inspectionProfiles/
+# !.idea/runConfigurations/
+# !.idea/vcs.xml
 
 # Keystore files - IMPORTANTE: No subir claves de firma
 *.jks
