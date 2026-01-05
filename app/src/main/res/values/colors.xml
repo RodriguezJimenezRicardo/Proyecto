@@ -5,4 +5,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundGrey">#42444A</color>
+    <color name="darkGrey">#2E2F33</color>
+    <color name="lightGrey">#8A8C91</color>
 </resources>

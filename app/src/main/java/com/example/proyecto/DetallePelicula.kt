@@ -1,10 +1,7 @@
 package com.example.proyecto
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,26 +12,30 @@ import coil.load
 import com.example.proyecto.data.local.AppDatabase
 import com.example.proyecto.data.model.Movie
 import com.example.proyecto.data.repository.MovieRepository
+import com.example.proyecto.databinding.ActivityDetallePeliculaBinding
 import kotlinx.coroutines.launch
 
 class DetallePelicula : AppCompatActivity() {
 
+    private lateinit var binding: ActivityDetallePeliculaBinding
     private lateinit var repository: MovieRepository
+    private lateinit var database: AppDatabase
     private var currentMovie: Movie? = null
     private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDetallePeliculaBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_detalle_pelicula)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
         // Inicializar repositorio
-        val database = AppDatabase.getDatabase(this)
+        database = AppDatabase.getDatabase(this)
         repository = MovieRepository(database.movieDao())
 
         // Obtener datos del Intent
@@ -68,18 +69,18 @@ class DetallePelicula : AppCompatActivity() {
         // Verificar si es favorito
         checkFavoriteStatus(movieId)
 
-        // Configurar botón de favoritos
+        // Configurar botones
         setupFavoriteButton()
+        setupReviewButton()
     }
 
     private fun displayMovieDetails() {
         currentMovie?.let { movie ->
-            findViewById<TextView>(R.id.textView3).text = movie.title
-            findViewById<TextView>(R.id.textView4).text = movie.overview
-            findViewById<RatingBar>(R.id.ratingBar2).rating = movie.getRatingOutOfFive()
+            binding.textView3.text = movie.title
+            binding.textView4.text = movie.overview
 
             // Cargar imagen de backdrop
-            findViewById<ImageView>(R.id.imageView2).load(movie.getBackdropUrl()) {
+            binding.imageView2.load(movie.getBackdropUrl()) {
                 crossfade(true)
                 placeholder(R.drawable.movie1)
                 error(R.drawable.movie1)
@@ -95,7 +96,7 @@ class DetallePelicula : AppCompatActivity() {
     }
 
     private fun setupFavoriteButton() {
-        findViewById<Button>(R.id.button3).setOnClickListener {
+        binding.button3.setOnClickListener {
             currentMovie?.let { movie ->
                 lifecycleScope.launch {
                     if (isFavorite) {
@@ -114,7 +115,30 @@ class DetallePelicula : AppCompatActivity() {
     }
 
     private fun updateFavoriteButton() {
-        val button = findViewById<Button>(R.id.button3)
-        button.text = if (isFavorite) "- Quitar de favoritos" else "+ Agregar a favoritos"
+        binding.button3.text = if (isFavorite) "- Quitar de favoritos" else "+ Agregar a favoritos"
+    }
+
+    private fun setupReviewButton() {
+        binding.btnHacerResena.setOnClickListener {
+            currentMovie?.let { movie ->
+                lifecycleScope.launch {
+                    // Verificar si ya existe una reseña
+                    val existingReview = database.reviewDao().getReviewByMovieId(movie.id)
+
+                    val intent = Intent(this@DetallePelicula, EditarResena::class.java).apply {
+                        putExtra("MOVIE_ID", movie.id)
+                        putExtra("MOVIE_TITLE", movie.title)
+                        putExtra("MOVIE_POSTER", movie.posterPath)
+
+                        if (existingReview != null) {
+                            putExtra("REVIEW_ID", existingReview.id)
+                            putExtra("RATING", existingReview.rating)
+                            putExtra("COMMENT", existingReview.comment)
+                        }
+                    }
+                    startActivity(intent)
+                }
+            }
+        }
     }
 }

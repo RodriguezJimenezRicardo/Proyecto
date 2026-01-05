@@ -6,16 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.proyecto.data.model.Movie
+import com.example.proyecto.data.model.Review
 
 @Database(
-    entities = [Movie::class],
-    version = 1,
+    entities = [Movie::class, Review::class],
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
+    abstract fun reviewDao(): ReviewDao
 
     companion object {
         @Volatile

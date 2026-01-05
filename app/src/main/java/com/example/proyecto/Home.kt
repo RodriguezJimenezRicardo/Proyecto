@@ -49,7 +49,15 @@ class Home : AppCompatActivity() {
         setupRecyclerViews()
         setupGenreChips()
         setupSearch()
+        setupProfileButton()
         loadMovies()
+    }
+
+    private fun setupProfileButton() {
+        binding.fabProfile.setOnClickListener {
+            val intent = Intent(this, Perfil::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerViews() {
