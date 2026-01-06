@@ -2,27 +2,24 @@ package com.example.proyecto
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.proyecto.data.local.AppDatabase
+import com.example.proyecto.data.local.SessionManager
 import com.example.proyecto.databinding.ActivityPerfilBinding
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 class Perfil : AppCompatActivity() {
 
     private lateinit var binding: ActivityPerfilBinding
-    private lateinit var sharedPreferences: SharedPreferences
-
-    companion object {
-        private const val PREF_NAME = "CineValorPrefs"
-        private const val KEY_USERNAME = "username"
-        private const val KEY_IS_LOGGED_IN = "isLoggedIn"
-    }
+    private lateinit var session: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,15 +32,28 @@ class Perfil : AppCompatActivity() {
             insets
         }
 
-        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+        session = SessionManager(this)
 
         loadUserProfile()
         setupButtons()
     }
 
     private fun loadUserProfile() {
-        val username = sharedPreferences.getString(KEY_USERNAME, "Usuario Invitado") ?: "Usuario Invitado"
-        binding.textView6.text = username
+        lifecycleScope.launch {
+            // Obtener el userId desde DataStore
+            val userId = session.userIdFlow.first()
+
+            // Si hay un ID de usuario, buscar el usuario en la base de datos
+            if (userId != null) {
+                val user = AppDatabase.getDatabase(this@Perfil).userDao().getById(userId)
+                // Mostrar el nombre del usuario en lugar del ID
+                if (user != null) {
+                    binding.textView6.text = user.name // Mostrar el nombre del usuario
+                }
+            } else {
+                binding.textView6.text = "Usuario Invitado"
+            }
+        }
     }
 
     private fun setupButtons() {
@@ -82,16 +92,11 @@ class Perfil : AppCompatActivity() {
 
         val input = EditText(this)
         input.hint = "Nuevo nombre de usuario"
-        val currentUsername = sharedPreferences.getString(KEY_USERNAME, "")
-        input.setText(currentUsername)
         builder.setView(input)
 
         builder.setPositiveButton("Guardar") { dialog, _ ->
             val newUsername = input.text.toString().trim()
             if (newUsername.isNotEmpty()) {
-                sharedPreferences.edit {
-                    putString(KEY_USERNAME, newUsername)
-                }
                 binding.textView6.text = newUsername
                 Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show()
             } else {
@@ -119,17 +124,15 @@ class Perfil : AppCompatActivity() {
     }
 
     private fun logout() {
-        // Limpiar datos de sesión
-        sharedPreferences.edit {
-            putBoolean(KEY_IS_LOGGED_IN, false)
+        // Limpiar los datos de sesión usando SessionManager (DataStore)
+        lifecycleScope.launch {
+            session.clear()
+            val intent = Intent(this@Perfil, Login::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+
+            Toast.makeText(this@Perfil, "Sesión cerrada", Toast.LENGTH_SHORT).show()
         }
-
-        // Redirigir a Login
-        val intent = Intent(this, Login::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
-
-        Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
     }
 }

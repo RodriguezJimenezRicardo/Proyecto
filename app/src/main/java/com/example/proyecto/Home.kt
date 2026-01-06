@@ -12,6 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyecto.data.local.AppDatabase
+import com.example.proyecto.data.local.SessionManager
 import com.example.proyecto.data.model.Movie
 import com.example.proyecto.data.repository.MovieRepository
 import com.example.proyecto.databinding.ActivityHomeBinding
@@ -19,6 +20,7 @@ import com.example.proyecto.ui.adapter.MovieAdapter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 class Home : AppCompatActivity() {
 
@@ -40,6 +42,17 @@ class Home : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        // Verificar si hay sesión activa
+        val session = SessionManager(this)
+        lifecycleScope.launch {
+            val userId = session.userIdFlow.first()
+            if (userId == null) {
+                startActivity(Intent(this@Home, MainActivity::class.java))
+                finish()
+                return@launch
+            }
         }
 
         // Inicializar repositorio

@@ -17,4 +17,7 @@
     <color name="cardBackground">#2E2F33</color>
     <color name="itemBackground">#2E2F33</color>
     <color name="itemTextColor">#FFFFFFFF</color>
+
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorLightGray">#F0F0F0</color>
 </resources>

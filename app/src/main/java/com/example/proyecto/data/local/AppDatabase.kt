@@ -9,7 +9,7 @@ import com.example.proyecto.data.model.Movie
 import com.example.proyecto.data.model.Review
 
 @Database(
-    entities = [Movie::class, Review::class],
+    entities = [Movie::class, Review::class, UserEntity::class],
     version = 2,
     exportSchema = false
 )
@@ -18,6 +18,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
     abstract fun reviewDao(): ReviewDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
