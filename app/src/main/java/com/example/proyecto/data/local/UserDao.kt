@@ -15,4 +15,10 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     suspend fun getById(userId: Long): UserEntity?
+
+    @Query("UPDATE users SET passwordHash = :newPasswordHash WHERE id = :userId")
+    suspend fun updatePassword(userId: Long, newPasswordHash: String)
+
+    @Query("DELETE FROM users WHERE id = :userId")
+    suspend fun deleteById(userId: Long)
 }

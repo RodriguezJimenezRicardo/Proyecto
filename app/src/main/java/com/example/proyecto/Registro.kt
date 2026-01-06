@@ -67,8 +67,10 @@ class Registro : AppCompatActivity() {
                 // Guardar el ID del usuario en la sesión
                 session.setUserId(newId)
 
-                // Redirigir al usuario a la pantalla de Home
-                startActivity(Intent(this@Registro, Home::class.java))
+                // Redirigir al usuario a la pantalla de Home y limpiar el stack
+                val intent = Intent(this@Registro, Home::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
                 finish()
             }
         }

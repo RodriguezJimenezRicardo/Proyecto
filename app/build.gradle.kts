@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 
+    // DataStore
+    implementation(libs.datastore.preferences)
+
     // Coil for image loading
     implementation(libs.coil)
 

@@ -50,8 +50,10 @@ class Login : AppCompatActivity() {
                 // Guardar el userId en la sesión (DataStore)
                 session.setUserId(user.id)
 
-                // Redirigir al Home
-                startActivity(Intent(this@Login, Home::class.java))
+                // Redirigir al Home y limpiar el stack de actividades
+                val intent = Intent(this@Login, Home::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
                 finish()
             }
         }

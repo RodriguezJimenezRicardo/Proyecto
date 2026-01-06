@@ -11,12 +11,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.proyecto.data.auth.PasswordHasher
+import com.example.proyecto.data.local.AppDatabase
+import com.example.proyecto.data.local.SessionManager
+import com.example.proyecto.data.local.UserDao
 import com.example.proyecto.databinding.ActivityAjustesBinding
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class Ajustes : AppCompatActivity() {
 
     private lateinit var binding: ActivityAjustesBinding
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var userDao: UserDao
+    private lateinit var sessionManager: SessionManager
 
     companion object {
         private const val PREF_NAME = "CineValorPrefs"
@@ -34,6 +43,11 @@ class Ajustes : AppCompatActivity() {
         }
 
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+
+        // Inicializar base de datos y session manager
+        val db = AppDatabase.getDatabase(this)
+        userDao = db.userDao()
+        sessionManager = SessionManager(this)
 
         loadSettings()
         setupButtons()
@@ -120,8 +134,32 @@ class Ajustes : AppCompatActivity() {
                     Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    // Aquí iría la lógica para cambiar la contraseña en el servidor
-                    Toast.makeText(this, "Contraseña actualizada exitosamente", Toast.LENGTH_SHORT).show()
+                    // Cambiar la contraseña en la base de datos
+                    lifecycleScope.launch {
+                        val userId = sessionManager.userIdFlow.first()
+                        if (userId == null) {
+                            Toast.makeText(this@Ajustes, "Error: No hay sesión activa", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                        val user = userDao.getById(userId)
+                        if (user == null) {
+                            Toast.makeText(this@Ajustes, "Error: Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                        // Verificar contraseña actual
+                        if (!PasswordHasher.verify(currentPassword, user.passwordHash)) {
+                            Toast.makeText(this@Ajustes, "La contraseña actual es incorrecta", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                        // Actualizar con la nueva contraseña
+                        val newPasswordHash = PasswordHasher.hash(newPassword)
+                        userDao.updatePassword(userId, newPasswordHash)
+
+                        Toast.makeText(this@Ajustes, "Contraseña actualizada exitosamente", Toast.LENGTH_SHORT).show()
+                    }
                     dialog.dismiss()
                 }
             }
@@ -157,20 +195,34 @@ class Ajustes : AppCompatActivity() {
         builder.setPositiveButton("Confirmar") { dialog, _ ->
             val confirmation = input.text.toString().trim()
             if (confirmation == "ELIMINAR") {
-                // Aquí iría la lógica para eliminar la cuenta
-                Toast.makeText(this, "Cuenta eliminada. Esperamos verte pronto.", Toast.LENGTH_LONG).show()
+                // Eliminar la cuenta de la base de datos
+                lifecycleScope.launch {
+                    val userId = sessionManager.userIdFlow.first()
+                    if (userId == null) {
+                        Toast.makeText(this@Ajustes, "Error: No hay sesión activa", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
 
-                // Limpiar preferencias y regresar al login
-                sharedPreferences.edit {
-                    clear()
+                    // Eliminar usuario de la base de datos
+                    userDao.deleteById(userId)
+
+                    // Limpiar la sesión
+                    sessionManager.clear()
+
+                    Toast.makeText(this@Ajustes, "Cuenta eliminada. Esperamos verte pronto.", Toast.LENGTH_LONG).show()
+
+                    // Limpiar preferencias y regresar al login
+                    sharedPreferences.edit {
+                        clear()
+                    }
+
+                    // Redirigir al login
+                    val intent = android.content.Intent(this@Ajustes, Login::class.java)
+                    intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or
+                                  android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                 }
-
-                // Redirigir al login
-                val intent = android.content.Intent(this, Login::class.java)
-                intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or
-                              android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(this, "Texto incorrecto. Cuenta no eliminada.", Toast.LENGTH_SHORT).show()
             }
