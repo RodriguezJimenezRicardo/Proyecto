@@ -11,14 +11,17 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyecto.data.local.AppDatabase
+import com.example.proyecto.data.repository.MovieRepository
 import com.example.proyecto.databinding.ActivityResenasBinding
 import com.example.proyecto.ui.adapter.ReviewAdapter
 import kotlinx.coroutines.launch
+import android.widget.Toast
 
 class Resenas : AppCompatActivity() {
 
     private lateinit var binding: ActivityResenasBinding
     private lateinit var database: AppDatabase
+    private lateinit var repository: MovieRepository
     private val reviewAdapter = ReviewAdapter(
         onItemClick = { review -> onReviewClick(review) },
         onEditClick = { review -> editReview(review) },
@@ -37,6 +40,7 @@ class Resenas : AppCompatActivity() {
         }
 
         database = AppDatabase.getDatabase(this)
+        repository = MovieRepository(database.movieDao())
 
         setupRecyclerView()
         setupBackButton()
@@ -99,17 +103,34 @@ class Resenas : AppCompatActivity() {
     }
 
     private fun onReviewClick(review: com.example.proyecto.data.model.Review) {
-        // Navegar al detalle de la película
-        val intent = Intent(this, DetallePelicula::class.java).apply {
-            putExtra("MOVIE_ID", review.movieId)
-            putExtra("MOVIE_TITLE", review.movieTitle)
-            putExtra("MOVIE_OVERVIEW", "")
-            putExtra("MOVIE_POSTER", review.moviePosterPath)
-            putExtra("MOVIE_BACKDROP", review.moviePosterPath)
-            putExtra("MOVIE_RATING", 0.0)
-            putExtra("MOVIE_RELEASE_DATE", "")
+        // Mostrar loading
+        binding.progressBar.visibility = View.VISIBLE
+
+        // Obtener detalles completos de la película desde la API
+        lifecycleScope.launch {
+            repository.getMovieDetails(review.movieId).onSuccess { movie ->
+                binding.progressBar.visibility = View.GONE
+
+                // Navegar al detalle de la película con todos los datos
+                val intent = Intent(this@Resenas, DetallePelicula::class.java).apply {
+                    putExtra("MOVIE_ID", movie.id)
+                    putExtra("MOVIE_TITLE", movie.title)
+                    putExtra("MOVIE_OVERVIEW", movie.overview)
+                    putExtra("MOVIE_POSTER", movie.posterPath)
+                    putExtra("MOVIE_BACKDROP", movie.backdropPath)
+                    putExtra("MOVIE_RATING", movie.voteAverage)
+                    putExtra("MOVIE_RELEASE_DATE", movie.releaseDate)
+                }
+                startActivity(intent)
+            }.onFailure { error ->
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(
+                    this@Resenas,
+                    "Error al cargar detalles de la película: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-        startActivity(intent)
     }
 
     private fun editReview(review: com.example.proyecto.data.model.Review) {

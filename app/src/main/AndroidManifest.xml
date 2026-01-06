@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto">
         <activity
+            android:name=".Ajustes"
+            android:exported="false" />
+        <activity
             android:name=".Favoritos"
             android:exported="false" />
         <activity

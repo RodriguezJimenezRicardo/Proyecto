@@ -64,16 +64,10 @@ class Perfil : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Botón Historial
-        binding.button6.setOnClickListener {
-            Toast.makeText(this, "Funcionalidad de historial próximamente", Toast.LENGTH_SHORT).show()
-            // TODO: Implementar actividad de historial
-        }
-
         // Botón Ajustes
         binding.button7.setOnClickListener {
-            Toast.makeText(this, "Funcionalidad de ajustes próximamente", Toast.LENGTH_SHORT).show()
-            // TODO: Implementar actividad de ajustes
+            val intent = Intent(this, Ajustes::class.java)
+            startActivity(intent)
         }
 
         // Botón Cerrar Sesión

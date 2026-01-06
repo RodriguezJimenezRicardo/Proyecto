@@ -4,63 +4,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:fillViewport="false"
     android:background="@color/backgroundGrey">
-
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="24dp"
     tools:context=".EditarResena">
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="12dp"
         android:text="Editar Reseña"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_movie"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_width="346dp"
+        android:layout_height="115dp"
+        android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/darkGrey"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="347dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:padding="12dp">
 
             <ImageView
                 android:id="@+id/iv_movie_poster"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
                 android:contentDescription="Poster de película"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/movie1" />
 
             <TextView
                 android:id="@+id/tv_movie_title"
-                android:layout_width="0dp"
+                android:layout_width="235dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="Título de la Película" />
         </LinearLayout>
@@ -70,7 +72,8 @@
         android:id="@+id/tv_rating_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
         android:text="Tu Calificación:"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -83,13 +86,14 @@
         style="@style/Widget.AppCompat.RatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:numStars="5"
-        android:rating="0"
-        android:stepSize="0.5"
-        android:progressTint="@color/gold"
-        android:secondaryProgressTint="@color/gold"
         android:progressBackgroundTint="@color/lightGrey"
+        android:progressTint="@color/gold"
+        android:rating="0"
+        android:secondaryProgressTint="@color/gold"
+        android:stepSize="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_rating_label" />
 
@@ -97,7 +101,8 @@
         android:id="@+id/tv_comment_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
         android:text="Tu Opinión:"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -108,7 +113,7 @@
     <EditText
         android:id="@+id/et_review_comment"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
         android:layout_marginTop="8dp"
         android:background="@android:drawable/edit_text"
         android:gravity="top|start"
@@ -118,31 +123,33 @@
         android:padding="12dp"
         android:textColor="@color/black"
         android:textColorHint="@color/lightGrey"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_comment_label" />
-
     <LinearLayout
+        android:id="@+id/layout_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_review_comment">
+        app:layout_constraintTop_toBottomOf="@id/et_review_comment"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/btn_cancel"
-            android:layout_width="0dp"
+            android:layout_width="7dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:backgroundTint="@color/lightGrey"
+            android:minHeight="48dp"
             android:text="Cancelar"
             android:textColor="@color/white"
             android:textStyle="bold" />
-
         <Button
             android:id="@+id/btn_save_review"
             android:layout_width="0dp"
@@ -152,10 +159,8 @@
             android:backgroundTint="@color/gold"
             android:text="Guardar Reseña"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:minHeight="48dp" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
-

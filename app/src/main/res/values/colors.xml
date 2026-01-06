@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colores base -->
     <color name="red">#F43636</color>
     <color name="gold">#DCAC30</color>
+
+    <!-- Colores del tema oscuro (único modo) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundGrey">#42444A</color>
     <color name="darkGrey">#2E2F33</color>
     <color name="lightGrey">#8A8C91</color>
+
+    <!-- Colores de texto y elementos -->
+    <color name="textPrimary">#FFFFFFFF</color>
+    <color name="textSecondary">#B3FFFFFF</color>
+    <color name="cardBackground">#2E2F33</color>
+    <color name="itemBackground">#2E2F33</color>
+    <color name="itemTextColor">#FFFFFFFF</color>
 </resources>

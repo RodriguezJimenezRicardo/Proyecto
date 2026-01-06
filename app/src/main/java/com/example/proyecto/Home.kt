@@ -79,6 +79,11 @@ class Home : AppCompatActivity() {
     }
 
     private fun setupGenreChips() {
+        // Botón de Home para regresar a la vista principal
+        binding.chipHome.setOnClickListener {
+            resetToHomeView()
+        }
+
         // IDs de géneros de TMDb
         binding.chipSciFi.setOnClickListener { loadMoviesByGenre(878, "Ciencia Ficción") }
         binding.chipAction.setOnClickListener { loadMoviesByGenre(28, "Acción") }
@@ -135,17 +140,45 @@ class Home : AppCompatActivity() {
         showLoading(true)
 
         lifecycleScope.launch {
+            // Cargar todas las películas del género y distribuirlas en las tres listas
             repository.getMoviesByGenre(genreId).onSuccess { movies ->
-                popularAdapter.submitList(movies)
-                topRatedAdapter.submitList(emptyList())
-                nowPlayingAdapter.submitList(emptyList())
-                binding.tvPopular.text = "Películas de $genreName"
+                if (movies.isNotEmpty()) {
+                    // Dividir las películas en tres grupos para mostrar en diferentes filas
+                    val chunkSize = (movies.size + 2) / 3 // Dividir en tres partes aproximadamente iguales
+                    val popularGenre = movies.take(chunkSize)
+                    val topRatedGenre = movies.drop(chunkSize).take(chunkSize)
+                    val nowPlayingGenre = movies.drop(chunkSize * 2)
+
+                    popularAdapter.submitList(popularGenre)
+                    topRatedAdapter.submitList(topRatedGenre)
+                    nowPlayingAdapter.submitList(nowPlayingGenre)
+
+                    // Actualizar los títulos de las secciones
+                    binding.tvPopular.text = "$genreName - Populares"
+                    binding.tvTopRated.text = "$genreName - Más valoradas"
+                    binding.tvNowPlaying.text = "$genreName - Más recientes"
+                } else {
+                    showError("No se encontraron películas de $genreName")
+                }
                 showLoading(false)
             }.onFailure { error ->
                 showError("Error al cargar películas de $genreName: ${error.message}")
                 showLoading(false)
             }
         }
+    }
+
+    private fun resetToHomeView() {
+        // Restaurar títulos originales
+        binding.tvPopular.text = "Películas Populares"
+        binding.tvTopRated.text = "Recomendados por la comunidad"
+        binding.tvNowPlaying.text = "En Cartelera"
+
+        // Limpiar el campo de búsqueda
+        binding.etSearch.text?.clear()
+
+        // Recargar las películas originales
+        loadMovies()
     }
 
     private fun searchMovies(query: String) {
